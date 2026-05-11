@@ -29,12 +29,13 @@ typedef struct {
   MAP_COORDS **coords;
   uint8_t currentMines;
   uint8_t lifesRemaining;
+  uint8_t cellsChecked;
 
 } MAP_DEF;
 
 MAP_DEF *create_new_map(const int *width, const int *height);
 void free_map(MAP_DEF *map);
 
-int check_value(uint8_t byte, COORDS_VALUES value);
-int toggle_value(uint8_t byte, COORDS_VALUES value);
+uint8_t check_value(uint8_t byte, COORDS_VALUES value);
+uint8_t toggle_value(uint8_t byte, COORDS_VALUES value);
 #endif

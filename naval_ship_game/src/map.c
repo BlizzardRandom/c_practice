@@ -1,5 +1,4 @@
 #include "map.h"
-#include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -10,28 +9,28 @@ static int gen_random(const int max, const int min) {
   return rand() % (max + 1 - min) + min;
 }
 
-int check_value(uint8_t byte, COORDS_VALUES value) {
+uint8_t check_value(uint8_t byte, COORDS_VALUES value) {
   return (byte >> value) & 1;
 }
 
-int toggle_value(uint8_t byte, COORDS_VALUES value) {
-  return (byte ^ (uint8_t)pow(2, value));
+uint8_t toggle_value(uint8_t byte, COORDS_VALUES value) {
+  return byte ^ (1 << value);
 }
 
 static void populate_random_mines(MAP_DEF *map) {
 #define MAX_MINES 5
   int mines_placed = 0;
   while (mines_placed != MAX_MINES) {
-    int pos = gen_random(map->cols * map->rows, 0);
+    int pos = gen_random((map->cols * map->rows - 1), 0);
     int x_pos = pos / map->rows;
     int y_pos = pos - (x_pos * map->rows);
 
-    MAP_COORDS calculated_mine = map->coords[y_pos][x_pos];
-    if (check_value(calculated_mine.opts, hasMine) == TRUE) {
-      continue;
-    }
+    MAP_COORDS *calculated_mine = &map->coords[y_pos][x_pos];
 
-    calculated_mine.opts = toggle_value(calculated_mine.opts, hasMine);
+    if (check_value(calculated_mine->opts, hasMine) == TRUE)
+      continue;
+
+    calculated_mine->opts = toggle_value(calculated_mine->opts, hasMine);
     mines_placed++;
   }
 
@@ -42,10 +41,10 @@ static void populate_random_mines(MAP_DEF *map) {
 MAP_DEF *create_new_map(const int *width, const int *height) {
   uint8_t w = DEFAULT_MAP_WIDTH, h = DEFAULT_MAP_HEIGHT;
 
-  if (width != NULL && (*width > 0 && *width < 255))
+  if (width != NULL && (*width > 0 && *width < 9))
     w = *width;
 
-  if (height != NULL && (*height > 0 && *height < 255))
+  if (height != NULL && (*height > 0 && *height < 9))
     h = *height;
 
   // rows

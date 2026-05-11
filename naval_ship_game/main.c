@@ -5,10 +5,12 @@
 #include "src/selection.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main(void) {
+  srand(time(NULL)); // for the randomness???
   int opt = 0;
-  char *helper_text;
+  char *helper_text = NULL;
   MAP_DEF *board = create_new_map(NULL, NULL);
 
   do {
@@ -45,8 +47,26 @@ int main(void) {
       printf("Generated new board\n");
       break;
     case 2:
+      if (board->lifesRemaining <= 0) {
+        printf("\033[1;33mCannot continue until another game is initialized! "
+               "You lost!\033[0m\n");
+        break;
+      }
+
       helper_text = select_point(board);
-      printf("> %s\n", helper_text);
+      if (helper_text != NULL)
+        printf("> %s\n", helper_text);
+
+      if (board->cellsChecked ==
+              (board->cols * board->rows - board->currentMines) ||
+          board->currentMines == 0) {
+        printf("\033[32m\nYOU'VE WON!\033[0m\n");
+        break;
+      }
+
+      if (board->lifesRemaining <= 0)
+        printf("\033[31mGAME OVER! 0 lifes remaining!\033[0m\n");
+
       break;
     case 3:
       print_map(board);
