@@ -1,4 +1,7 @@
 build:
-	gcc -o main main.c -Wall -Wextra -Werror
+	gcc -o main -Wall -Wextra -Werror main.c ./src/* -lm
 
-.PHONY: build
+debug:
+	gcc -o main -g -Wall -Wextra -Werror main.c ./src/* -lm
+
+.PHONY: build debug

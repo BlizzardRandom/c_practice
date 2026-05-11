@@ -26,7 +26,7 @@ static void populate_random_mines(MAP_DEF *map) {
     int x_pos = pos / map->rows;
     int y_pos = pos - (x_pos * map->rows);
 
-    MAP_COORDS calculated_mine = map->coords[x_pos][y_pos];
+    MAP_COORDS calculated_mine = map->coords[y_pos][x_pos];
     if (check_value(calculated_mine.opts, hasMine) == TRUE) {
       continue;
     }
@@ -61,6 +61,7 @@ MAP_DEF *create_new_map(const int *width, const int *height) {
   map_def->coords = matrix;
   map_def->lifesRemaining = 2;
 
+  populate_random_mines(map_def);
   return map_def;
 }
 

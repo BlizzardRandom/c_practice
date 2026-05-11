@@ -1,14 +1,18 @@
 
+#include "src/credits.h"
 #include "src/map.h"
+#include "src/print_map.h"
 #include "src/selection.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 int main(void) {
-  int opt;
+  int opt = 0;
   char *helper_text;
   MAP_DEF *board = create_new_map(NULL, NULL);
 
   do {
+    printf("\n");
     printf("Select one of the following options: \n"
            "1) New game\n"
            "2) Explore\n"
@@ -16,7 +20,23 @@ int main(void) {
            "4) Credits\n"
            "5) GET OUT!\n");
 
-    scanf("%d", &opt);
+    if (scanf("%d", &opt) != 1) {
+      printf("Invalid input! Please enter a number.\n");
+      int c;
+
+      // putting a char it just sends "a\n"... so i need to clear the \n as
+      // well....
+      while ((c = getchar()) != '\n' && c != EOF)
+        ;
+
+      opt = 0;
+    }
+
+    // clear screen posix only i wont be doing macros for different
+    // architectures
+    // TODO: port to clang!!!
+    printf("\e[1;1H\e[2J");
+    printf("\n\n\n");
 
     switch (opt) {
     case 1:
@@ -29,10 +49,10 @@ int main(void) {
       printf("> %s\n", helper_text);
       break;
     case 3:
-      printf("opt 3\n");
+      print_map(board);
       break;
     case 4:
-      printf("opt 4\n");
+      print_credits();
       break;
     case 5:
       free_map(board);
