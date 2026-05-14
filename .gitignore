@@ -1,2 +1,5 @@
 *.out
 build/*
+*main
+*main.out
+*m.out
